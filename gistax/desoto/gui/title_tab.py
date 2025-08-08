@@ -100,7 +100,8 @@ class TitleTab(ttk.Frame):
     # ------------------------------------------------------------------
     def get_template_path(self):
         try:
-            current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            # Path needs to go up 3 levels from /gistax/desoto/gui/ to the root /gistax/
+            current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             path = os.path.join(current_dir, "templates", "td_tmplt2.docx")
             return path if os.path.exists(path) else None
         except Exception:
@@ -141,12 +142,21 @@ class TitleTab(ttk.Frame):
     def auto_set_output_path(self):
         pdf_path = self.pdf_var.get()
         if pdf_path:
-            name = os.path.splitext(os.path.basename(pdf_path))[0]
-            self.output_var.set(os.path.join(os.path.dirname(pdf_path), f"{name}_TitleDoc.docx"))
+            # Per user request, the output file should be named "TitleDocs.docx"
+            output_dir = os.path.dirname(pdf_path)
+            self.output_var.set(os.path.join(output_dir, "TitleDocs.docx"))
 
     def browse_output(self):
+        # Default to "TitleDocs.docx" as requested
+        initial_dir = ""
+        pdf_path = self.pdf_var.get()
+        if pdf_path:
+            initial_dir = os.path.dirname(pdf_path)
+
         path = filedialog.asksaveasfilename(
             title="Save Title Document As",
+            initialdir=initial_dir,
+            initialfile="TitleDocs.docx",
             defaultextension=".docx",
             filetypes=[("Word documents", "*.docx"), ("All files", "*.*")],
         )

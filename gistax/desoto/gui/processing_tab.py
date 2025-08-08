@@ -154,8 +154,8 @@ class ProcessingTab(ttk.Frame):
 
     def get_template_path(self):
         try:
-            # Assumes templates are in a 'templates' folder sibling to the 'desoto' folder
-            current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            # Path needs to go up 3 levels from /gistax/desoto/gui/ to the root /gistax/
+            current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             path = os.path.join(current_dir, "templates", "td_tmplt2.docx")
             return path if os.path.exists(path) else None
         except Exception:
