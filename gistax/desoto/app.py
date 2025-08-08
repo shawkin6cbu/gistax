@@ -30,10 +30,17 @@ class App(TkinterDnD.Tk):
         nb = ttk.Notebook(self)
         nb.pack(expand=True, fill="both", padx=8, pady=8)
 
-        nb.add(ParcelTab(nb, self.shared_data), text="Parcel Finder")
-        nb.add(TaxTab(nb, self.shared_data), text="Tax Calculator")
-        nb.add(TitleTab(nb, self.shared_data), text="TitleDocs")
-        nb.add(ProcessingTab(nb, self.shared_data), text="Processing")
+        # Create tabs
+        processing_tab = ProcessingTab(nb, self.shared_data)
+        parcel_tab = ParcelTab(nb, self.shared_data, processing_tab)
+        tax_tab = TaxTab(nb, self.shared_data, processing_tab)
+        title_tab = TitleTab(nb, self.shared_data)
+
+        # Add tabs to notebook
+        nb.add(parcel_tab, text="Parcel Finder")
+        nb.add(tax_tab, text="Tax Calculator")
+        nb.add(title_tab, text="TitleDocs")
+        nb.add(processing_tab, text="Processing")
 
 
 if __name__ == "__main__":
