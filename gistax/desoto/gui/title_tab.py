@@ -10,8 +10,9 @@ from desoto.services.title_chain import process_title_pdf
 class TitleTab(ttk.Frame):
     """Title document processing tab with drag-and-drop PDF input."""
 
-    def __init__(self, parent):
+    def __init__(self, parent, shared_data):
         super().__init__(parent, padding=10)
+        self.shared_data = shared_data
 
         # ── PDF Input Section ───────────────────────────────────
         pdf_frame = ttk.LabelFrame(self, text="PDF Input", padding=10)
@@ -100,7 +101,7 @@ class TitleTab(ttk.Frame):
     def get_template_path(self):
         try:
             current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            path = os.path.join(current_dir, "templates", "td_tmplt.docx")
+            path = os.path.join(current_dir, "templates", "td_tmplt2.docx")
             return path if os.path.exists(path) else None
         except Exception:
             return None
@@ -177,6 +178,7 @@ class TitleTab(ttk.Frame):
             self._ui(self.progress.stop)
             self._ui(lambda: self.status_var.set(msg))
             if success:
+                self.shared_data.set_data("title_chain_results", deeds)
                 self._ui(lambda: self.display_results(deeds))
                 self._ui(lambda: messagebox.showinfo("Success", msg))
             else:

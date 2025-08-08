@@ -6,8 +6,9 @@ from desoto.services import query_parcels
 class ParcelTab(ttk.Frame):
     """Parcel-lookup tab with Refresh button, aligned labels, and wider fields."""
 
-    def __init__(self, parent):
+    def __init__(self, parent, shared_data):
         super().__init__(parent, padding=10)
+        self.shared_data = shared_data
         win_bg = self.winfo_toplevel().cget("bg")   # read-only Entry background
 
         # ── search row ───────────────────────────────────────────
@@ -102,6 +103,14 @@ class ParcelTab(ttk.Frame):
         self.subd_var.set(attr.get("SUBD_NAME",      ""))
         self.lot_var.set(attr.get("LOT",             ""))
 
+        self.shared_data.update_data({
+            "parcel_pin": attr["PIN"],
+            "parcel_address": attr["FULL_ADDR"],
+            "parcel_owner": attr.get("OWNER_NAME", ""),
+            "parcel_city_state_zip": f'{attr.get("CITY","")}, {attr.get("STATE","")} {attr.get("ZIP_CODE","")}',
+            "parcel_legal_description": f'Lot {attr.get("LOT", "")}, {attr.get("SUBD_NAME", "")}',
+        })
+
     # ── Enter selects first result ──────────────────────────────
     def on_enter(self, *_):
         items = self.tree.get_children()
@@ -120,4 +129,3 @@ class ParcelTab(ttk.Frame):
         self.subd_var.set("")
         self.lot_var.set("")
         self.addr_entry.focus()
-
