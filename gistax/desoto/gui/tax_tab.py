@@ -4,9 +4,10 @@ from desoto.services import fetch_total, DISTRICT_OPTIONS
 
 
 class TaxTab(ttk.Frame):
-    def __init__(self, parent, shared_data):
+    def __init__(self, parent, shared_data, processing_tab):
         super().__init__(parent, padding=20)
         self.shared_data = shared_data
+        self.processing_tab = processing_tab
 
         # helper for labels
         def lbl(text, r, c, **kw):
@@ -76,4 +77,5 @@ class TaxTab(ttk.Frame):
         self.btn_calc.config(state="normal")
         if "TOTAL: $" in msg:
             tax_amount = msg.replace("TOTAL: $", "")
-            self.shared_data.set_data("tax_2024_total", tax_amount)
+            self.shared_data.set_data("tax_2025_estimated", tax_amount)
+            self.processing_tab.load_from_tabs()

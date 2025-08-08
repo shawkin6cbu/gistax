@@ -91,6 +91,7 @@ class ProcessingTab(ttk.Frame):
         self.city_var.set(self.shared_data.get_data("parcel_city_state_zip"))
         self.legal_desc_var.set(self.shared_data.get_data("parcel_legal_description"))
         self.tax_2024_total_var.set(self.shared_data.get_data("tax_2024_total"))
+        self.tax_2025_est_var.set(self.shared_data.get_data("tax_2025_estimated"))
 
         results = self.shared_data.get_data("title_chain_results")
         if results:
@@ -169,16 +170,16 @@ class ProcessingTab(ttk.Frame):
 
         # --- Gather all data ---
         placeholders = {
-            "{PARCEL_NUMBER}": self.pin_var.get(),
-            "{PROP_ADDR}": self.address_var.get(),
-            "{OWNER}": self.owner_var.get(),
+            "{PARCEL}": self.pin_var.get(),
+            "{PROPSTRE}": self.address_var.get(),
+            "{SLRLAST}": self.owner_var.get(),
             "{CITY_STATE_ZIP}": self.city_var.get(),
             "{LEGAL_DESC}": self.legal_desc_var.get(),
-            "{TAX_2024_TOTAL}": self.tax_2024_total_var.get(),
+            "{TAXAMT}": self.tax_2024_total_var.get(),
             "{TAX_2024_PAID}": self.tax_2024_paid_var.get(),
             "{TAX_2025_EST}": self.tax_2025_est_var.get(),
-            "{LENDER}": self.lender_var.get(),
-            "{BORROWER}": self.borrower_var.get(),
+            "{Lender}": self.lender_var.get(),
+            "{BYRLAST}": self.borrower_var.get(),
             "{LOAN_AMOUNT}": self.loan_amount_var.get(),
             "{WRITER}": self.writer_var.get(),
             "{DATE}": self.date_var.get(),

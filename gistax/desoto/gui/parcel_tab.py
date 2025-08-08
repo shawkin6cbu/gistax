@@ -6,9 +6,10 @@ from desoto.services import query_parcels
 class ParcelTab(ttk.Frame):
     """Parcel-lookup tab with Refresh button, aligned labels, and wider fields."""
 
-    def __init__(self, parent, shared_data):
+    def __init__(self, parent, shared_data, processing_tab):
         super().__init__(parent, padding=10)
         self.shared_data = shared_data
+        self.processing_tab = processing_tab
         win_bg = self.winfo_toplevel().cget("bg")   # read-only Entry background
 
         # ── search row ───────────────────────────────────────────
@@ -66,11 +67,12 @@ class ParcelTab(ttk.Frame):
         self.parcel_var = tk.StringVar()
         make_entry(self.parcel_var).grid(row=0, column=1, sticky="w", pady=2)
 
-        self.owner1_var = add_row("Owner 1:",          1)
-        self.owner2_var = add_row("Owner 2:",          2)
-        self.city_var   = add_row("City / State ZIP:", 3)
-        self.subd_var   = add_row("Subdivision:",      4)
-        self.lot_var    = add_row("Lot:",              5)
+        self.address_var = add_row("Address:", 1)
+        self.owner1_var = add_row("Owner 1:",          2)
+        self.owner2_var = add_row("Owner 2:",          3)
+        self.city_var   = add_row("City / State ZIP:", 4)
+        self.subd_var   = add_row("Subdivision:",      5)
+        self.lot_var    = add_row("Lot:",              6)
 
         self.results: list[dict] = []
 
@@ -97,19 +99,28 @@ class ParcelTab(ttk.Frame):
         attr = self.results[int(sel[0])]
         self.addr_var.set(attr["FULL_ADDR"])
         self.parcel_var.set(attr["PIN"])
-        self.owner1_var.set(attr.get("OWNER_NAME",   ""))
-        self.owner2_var.set(attr.get("SECOND_OWNER", ""))
+        self.address_var.set(attr["FULL_ADDR"])
+        owner1 = attr.get("OWNER_NAME", "")
+        owner2 = attr.get("SECOND_OWNER", "")
+        self.owner1_var.set(owner1)
+        self.owner2_var.set(owner2)
         self.city_var.set(f'{attr.get("CITY","")}, {attr.get("STATE","")} {attr.get("ZIP_CODE","")}')
         self.subd_var.set(attr.get("SUBD_NAME",      ""))
         self.lot_var.set(attr.get("LOT",             ""))
 
+        full_owner = owner1
+        if owner2:
+            full_owner = f"{owner1} & {owner2}"
+
         self.shared_data.update_data({
             "parcel_pin": attr["PIN"],
             "parcel_address": attr["FULL_ADDR"],
-            "parcel_owner": attr.get("OWNER_NAME", ""),
+            "parcel_owner": full_owner,
             "parcel_city_state_zip": f'{attr.get("CITY","")}, {attr.get("STATE","")} {attr.get("ZIP_CODE","")}',
             "parcel_legal_description": f'Lot {attr.get("LOT", "")}, {attr.get("SUBD_NAME", "")}',
         })
+
+        self.processing_tab.load_from_tabs()
 
     # ── Enter selects first result ──────────────────────────────
     def on_enter(self, *_):
